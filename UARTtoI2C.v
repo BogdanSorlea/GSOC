@@ -76,13 +76,14 @@ always @(posedge clock) begin
     case(state)
         START:begin 
             goTX <= 0;
+            memCnt <= 0;
             if(d_avail)
                 if(dataRX == 83) state <= FILLBUF;
         end
         
         FILLBUF: 
             if(d_avail) begin
-                if(dataRX == 115) begin 
+                if(dataRX == 115) begin //s
                     memCnt <= 0;
                     command[memCnt] <= dataRX;
                     state <= SEND;
@@ -116,12 +117,12 @@ always @(posedge clock) begin
                 state <= WAIT;
              end
              else begin
-                 if(command[memCnt] == 115) begin
+                 if(command[memCnt] == 115 || command[memCnt/2] == 115) begin
                     start <= 0;
                     stop <= 1;
                     go <= 1;
                     state <= START;
-                    TXreg <= 84; //T
+                    TXreg <= 68; //D
                     goTX <= 1;
                  end
                  else begin
