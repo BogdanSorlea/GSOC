@@ -17,7 +17,7 @@ module I2C_M(input clock,
              output reg SCL_o,
              output reg [7:0] dataR,  //data to read from slave
              output reg busy,
-             output reg [3:0] state          
+             output reg [2:0] state          
     );
 
  
@@ -36,6 +36,8 @@ integer index=0;
 integer stopCnt = 0;
 always @(posedge clock) begin
     SCL_prev <= SCL_i;
+    SDA_o <= 0;
+    SCL_o <= 0;
     case(state)
         WAIT: begin
             NACK <= 0;

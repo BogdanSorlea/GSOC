@@ -2,27 +2,17 @@
 
 
 
-module UARTtoI2C(input in,
+module UARTtoI2C(output SDA,
+                 output SCL,
                  input clock,
-                 output [3:0] state,
-                 output TX
+                 output reg [2:0] state,
+                 output [2:0] stateI2C,
+                 output TX,
+                 input RX                
     );
 
 wire [7:0] dataRX;
 wire  d_avail;
-reg [7:0] command[0:31];
-reg [4:0] memCnt = 0;
-reg [1:0] byteCnt = 0;
-reg [7:0] LSB;
-reg start = 0;
-reg stop = 0;
-reg [7:0] dataW;
-reg SDA_i;
-reg SCL_i;         
-reg RW;
-reg [7:0] TXreg;
-reg go = 0;
-reg goTX = 0;
 wire ACK;
 wire NAC;
 wire TO;
@@ -33,15 +23,27 @@ wire SCL_o;
 wire [7:0] dataR;
 wire busy;
 wire TXbusy;
-wire [3:0] stateI2C;
-reg [3:0] state = 0;
+wire SDA_i;
+wire SCL_i; 
+reg [7:0] command[0:31];
+reg [4:0] memCnt = 0;
+reg [1:0] byteCnt = 0;
+reg [7:0] LSB;
+reg start = 0;
+reg stop = 0;
+reg [7:0] dataW;       
+reg RW;
+reg [7:0] TXreg;
+reg go = 0;
+reg goTX = 0;
+
 parameter START=0,
           FILLBUF=1,
           SEND=2,
           WAIT=3;
           
 RX Receiver (.clock(clock),
-             .in(in),
+             .in(RX),
              .out(dataRX),
              .d_avail(d_avail)
              );
@@ -62,21 +64,28 @@ I2C_M(.clock(clock),
       .TO(TO),
       .dataR(dataR),
       .busy(busy),
-      .state(stateI2C));               
+      .state(stateI2C),
+      .SDA_t(SDA_t),
+      .SCL_t(SCL_t),
+      .SDA_o(SDA_o),
+      .SCL_o(SCL_o),
+      .SCL_i(SCL),
+      .SDA_i(SDA));               
             
 triBuf TSDA(.tristate(SDA_t),
             .in(SDA_o),
-            .out(SDA_i));
+            .out(SDA));
             
 triBuf TSCL(.tristate(SCL_t),
             .in(SCL_o),
-            .out(SCL_i));
+            .out(SCL));
    
 always @(posedge clock) begin                           
     case(state)
         START:begin 
             goTX <= 0;
             memCnt <= 0;
+            byteCnt <= 0;
             if(d_avail)
                 if(dataRX == 83) state <= FILLBUF;
         end
@@ -102,6 +111,7 @@ always @(posedge clock) begin
                           else begin
                             command[memCnt] <= dataRX;
                             memCnt <= memCnt + 1;
+                            byteCnt <= 0;
                           end
                 end
         end
@@ -128,7 +138,8 @@ always @(posedge clock) begin
                  else begin
                     start <= 0;
                     stop <= 0;
-                    RW <= command [memCnt + 1];
+                    if(command [memCnt + 1] == 87) RW <= 0;
+                    else RW <= 1;
                     dataW <= command[memCnt];
                     go <= 1;
                     state <= WAIT;
