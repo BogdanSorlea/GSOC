@@ -10,14 +10,14 @@ module I2C_M(input clock,
              input go,
              output reg ACK,
              output reg NACK,
-             output reg TO,
-             output reg SDA_t,
-             output reg SCL_t,
+             output reg TO = 0,
+             output reg SDA_t = 1,
+             output reg SCL_t = 1,
              output reg SDA_o,
              output reg SCL_o,
              output reg [7:0] dataR,  //data to read from slave
              output reg busy,
-             output reg [2:0] state          
+             output reg [2:0] state = 0          
     );
 
  
@@ -41,8 +41,7 @@ always @(posedge clock) begin
     case(state)
         WAIT: begin
             NACK <= 0;
-            ACK <= 0;
-            TO <= 0;
+            ACK <= 0;            
             if(go) begin
                 if(start == 1) begin 
                     state <= WRITE;
@@ -107,24 +106,29 @@ end
 
 always @(posedge clock) begin
     if(SCL_en) begin
-      if(cntC == 0) SCL_t <= 0;
-      if(cntC >= 500 && cntC < 1000) begin
-        SCL_t <= 1;
-        if(SCL_i == 0) stretch <= 1;
-        else stretch <= 0;
-      end            
-      if(cntC == 1000) cntC <= 0;
-      else if (stretch == 0) cntC <= cntC + 1;  
-           else cntT <= cntT + 1;           
+       if(SCL_i == 0) stretch <= 1;
+       else stretch <= 0;
+       if(cntC == 0) SCL_t <= 0;
+       if(cntC >= 500 && cntC < 1000) begin
+           SCL_t <= 1;        
+       end            
+       if(cntC == 1000) cntC <= 0;
+       else if (stretch == 0) begin 
+                cntC <= cntC + 1;  
+                cntT <= 0;
+            end
+            else cntT <= cntT + 1;     
+       if(cntT == 3400000) begin
+            TO <= 1;
+            state <= WAIT;
+       end
+       if(TO) TO <= 0;            
     end
     else begin 
         SCL_t <= 1;
         cntC <= 500;
     end
-    if(cntT == 3400000) begin
-        TO <= 1;
-        state <= WAIT;
-    end
+    
 end
 
 endmodule

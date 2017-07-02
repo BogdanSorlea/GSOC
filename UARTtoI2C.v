@@ -5,7 +5,7 @@
 module UARTtoI2C(output SDA,
                  output SCL,
                  input clock,
-                 output reg [2:0] state,
+                 output reg [2:0] state = 0,
                  output [2:0] stateI2C,
                  output TX,
                  input RX                
@@ -80,7 +80,8 @@ triBuf TSCL(.tristate(SCL_t),
             .in(SCL_o),
             .out(SCL));
    
-always @(posedge clock) begin                           
+always @(posedge clock) begin
+    if(goTX == 1) goTX <= 0;                                                          
     case(state)
         START:begin 
             goTX <= 0;
@@ -116,8 +117,7 @@ always @(posedge clock) begin
                 end
         end
         
-        SEND: begin
-             if(go == 1) go <= 0;
+        SEND: begin             
              if(memCnt == 0) begin
                 RW <= command [memCnt + 1];
                 dataW <= command [memCnt];
