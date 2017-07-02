@@ -51,16 +51,16 @@ always @(posedge clock) begin
             ack <= 0;                 
                  
             if (go) begin
-                if(start == 1) begin 
+                if (start == 1) begin 
                     state <= WRITE_S;
                     SCL_en <= 1;
                     SDA_t <= 0;
                 end
                 
-                else if(stop) 
+                else if (stop) 
                     state <= STOP_S;
                     
-                else if(rw == 0) 
+                else if (rw == 0) 
                     state <= WRITE_S;
                     
                 else 
@@ -85,7 +85,7 @@ always @(posedge clock) begin
         
         ACK_RECV_S : begin   
             if (SCL_prev == 0 && SCL_i == 1) begin 
-                if(SDA_i == 0) 
+                if (SDA_i == 0) 
                     ack <=1;
                 else 
                     nack <=1;
@@ -98,7 +98,7 @@ always @(posedge clock) begin
                     data_r[8 - index_v] <= SDA_i;
                     index_v = index_v + 1;
                 end
-                else if(index_v == 8) begin                
+                else if (index_v == 8) begin                
                     index_v = 9;
                     SDA_t <= 0;                                                  
                 end 
@@ -123,19 +123,19 @@ always @(posedge clock) begin
 end
 
 always @(posedge clock) begin
-    if(SCL_en) begin
-        if(SCL_i == 0) 
+    if (SCL_en) begin
+        if (SCL_i == 0) 
             stretch <= 1;
         else 
             stretch <= 0;
         
-        if(cnt_c == 0) 
+        if (cnt_c == 0) 
             SCL_t <= 0;
             
-        if(cnt_c >= 500 && cnt_c < 1000) 
+        if (cnt_c >= 500 && cnt_c < 1000) 
             SCL_t <= 1;        
                     
-        if(cnt_c == 1000) 
+        if (cnt_c == 1000) 
             cnt_c <= 0;
         else if (stretch == 0) begin 
             cnt_c <= cnt_c + 1;  
@@ -144,12 +144,13 @@ always @(posedge clock) begin
         else 
             cnt_t <= cnt_t + 1;
              
-        if(cnt_t == 3400000) begin
+        if (cnt_t == 3400000) begin
              timeout <= 1;
              state <= WAIT_S;
         end
         
-        if(timeout) timeout <= 0;  
+        if (timeout) 
+            timeout <= 0;  
                   
      end
      else begin 
