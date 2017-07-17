@@ -5,16 +5,21 @@ module UARTtoI2C(
     output reg [2:0] state = 0,
     output [2:0] state_i2c,
     
-    output SDA,
-    output SCL,
+    inout SDA,
+    inout SCL,
     
     output TX,
-    input RX                
+    input RX,
+    output test,
+    output pwm,
+    input fb,
+    output en            
     );
 
 wire [7:0] data_rx;
-wire  d_avail;
+wire d_avail;
 wire ack;
+wire ack_r;
 wire nack;
 wire TO;
 wire SDA_t;
@@ -37,13 +42,20 @@ reg rw;
 reg [7:0] data_tx;
 reg go = 0;
 reg goTX = 0;
+reg [23:0] buffer_tx;
 
 parameter 
     START_S = 0,
     FILLBUF_S = 1,
     SEND_S = 2,
     WAIT_S = 3;
-          
+
+PWM_Generator gen(
+    .clock(clock),
+    .fb(fb),
+    .pwm(pwm),
+    .en(en));
+             
 RX Receiver(
     .clock(clock),
     .in(RX),
@@ -67,6 +79,7 @@ I2C_M(
     .rw(rw),
     .go(go),
     .ack(ack),
+    .ack_r(ack_r),
     .nack(nack),
     .timeout(timeout),
     .data_r(data_r),
@@ -77,7 +90,8 @@ I2C_M(
     .SDA_o(SDA_o),
     .SCL_o(SCL_o),
     .SCL_i(SCL),
-    .SDA_i(SDA)
+    .SDA_i(SDA),
+    .test(test)
 );               
             
 triBuf TSDA(
@@ -91,10 +105,14 @@ triBuf TSCL(
     .in(SCL_o),
     .out(SCL)
 );
+
    
 always @(posedge clock) begin
     if (goTX == 1) 
         goTX <= 0;  
+        
+    if(go == 1)    
+        go <= 0;
                                                                 
     case(state)
         START_S : begin 
@@ -112,40 +130,52 @@ always @(posedge clock) begin
                     memCnt <= 0;
                     command[memCnt] <= data_rx;
                     state <= SEND_S;
-                    memCnt <= 0;
                 end
                 else begin
                     if (byteCnt == 0) begin
-                        LSB <= data_rx;
+                        if(data_rx < 58)
+                            LSB <= data_rx - 48;
+                        else
+                            LSB <= data_rx - 55;
+                            
                         byteCnt <= 1;
                     end
                     else if (byteCnt == 1) begin
-                        command[memCnt] <= (data_rx - 48) * 16 + LSB - 48;
+                        if(data_rx < 58)
+                            command[memCnt] <= LSB * 16 + data_rx - 48;
+                        else
+                            command[memCnt] <= LSB * 16 + data_rx - 55;
                         memCnt <= memCnt + 1;   
-                        byteCnt <= byteCnt + 1;                      
+                        byteCnt <= byteCnt + 1;       
                     end
                     else begin
                         command[memCnt] <= data_rx;
                         memCnt <= memCnt + 1;
-                        byteCnt <= 0;
+                        byteCnt <= 0;                                                                                   
                     end
                 end
             end
         
         SEND_S : begin             
             if (memCnt == 0) begin
-                rw <= command [memCnt + 1];
-                data_w <= command [memCnt];
+                if (command [memCnt + 1] == 87)  // W
+                    rw <= 0;
+                else 
+                    rw <= 1;
+                    
+                data_w <= command [memCnt];               
                 start <= 1;
                 stop <= 0;
-                go <= 1;
+                if (go == 0) 
+                    go <= 1;
                 state <= WAIT_S;
             end
             else begin
                 if (command[memCnt] == 115 || command[memCnt/2] == 115) begin
                     start <= 0;
                     stop <= 1;
-                    go <= 1;
+                    if (go == 0) 
+                        go <= 1;
                     state <= START_S;
                     data_tx <= 68; //D
                     goTX <= 1;
@@ -160,7 +190,8 @@ always @(posedge clock) begin
                         rw <= 1;
                         
                     data_w <= command[memCnt];
-                    go <= 1;
+                    if (go == 0) 
+                       go <= 1;
                     state <= WAIT_S;
                 end
             end
@@ -171,20 +202,22 @@ always @(posedge clock) begin
                 state <= SEND_S;
                 memCnt <= memCnt + 2;
             end
-            else begin
-                if (nack) begin
-                    state <= START_S;
-                    data_tx <= 78; //N
-                    goTX <= 1;
-                end
-                else begin
-                    if (timeout) begin
-                        data_tx <= 84; //T
-                        goTX <= 1;
-                        state <= START_S;
-                    end
-                end
+            else if (nack) begin
+                state <= START_S;
+                data_tx <= 78; //N
+                goTX <= 1;
             end
+            else if (timeout) begin
+                data_tx <= 84; //T
+                goTX <= 1;
+                state <= START_S;
+            end
+            else if (ack_r) begin
+                state <= SEND_S;
+                memCnt <= memCnt + 2;
+                data_tx <= data_r; //N
+                goTX <= 1;
+            end                           
         end              
     endcase  
 end        
