@@ -1,0 +1,8 @@
+Change Component Designator: OldDesignator=DRV1 NewDesignator=DRV2
+Change Component Designator: OldDesignator=DRV2 NewDesignator=DRV1
+Change Net Name : Old Net Name=NetDRV1_3 New Net Name=NetDRV2_3
+Change Net Name : Old Net Name=NetDRV1_5 New Net Name=NetDRV2_5
+Change Net Name : Old Net Name=NetDRV2_3 New Net Name=NetDRV1_3
+Change Net Name : Old Net Name=NetDRV2_5 New Net Name=NetDRV1_5
+Added Member To Class: ClassName=Sheet1 Member=Component P Header 2
+Added Room: Name=Sheet1

@@ -1,0 +1,3 @@
+Added Pin To Net: NetName=FB2 Pin=PMOD-9
+Added Pin To Net: NetName=PWM Pin=PMOD-10
+Added Pin To Net: NetName=SCL Pin=PMOD-11

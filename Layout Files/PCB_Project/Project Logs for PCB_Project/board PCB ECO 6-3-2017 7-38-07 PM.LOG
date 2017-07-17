@@ -1,0 +1,116 @@
+Added Component: Designator=C1(C1210_M)
+Added Component: Designator=C2(0603)
+Added Component: Designator=C3(C1210_M)
+Added Component: Designator=COMP(SOT23-8)
+Added Component: Designator=DAC(TSSOP50P500X110-10N)
+Added Component: Designator=DRV(QFN50P200X200X80_HS-9N)
+Added Component: Designator=DualNMos(ONSC-UDFN-6-517BF_V)
+Added Component: Designator=L1(WE-MAPI_3020)
+Added Component: Designator=OUT(HDR1X2)
+Added Component: Designator=P_DAC(HDR1X2)
+Added Component: Designator=P_GND(HDR1X4)
+Added Component: Designator=PMOD(HDR2X6_CEN)
+Added Component: Designator=R1(0603)
+Added Component: Designator=R2(0603)
+Added Component: Designator=R3(0603)
+Added Component: Designator=R_hist1(0603)
+Added Component: Designator=R_hist2(0603)
+Added Component: Designator=R_hist3(0603)
+Added Component: Designator=R_hist4(0603)
+Added Component: Designator=Vcc2(HDR1X2)
+Added Component: Designator=Vin(HDR1X2)
+Added Pin To Net: NetName=CTRL1 Pin=DRV-8
+Added Pin To Net: NetName=CTRL1 Pin=DualNMos-2
+Added Net: Name=CTRL1
+Added Pin To Net: NetName=CTRL2 Pin=DRV-5
+Added Pin To Net: NetName=CTRL2 Pin=DualNMos-5
+Added Net: Name=CTRL2
+Added Pin To Net: NetName=EN Pin=DRV-3
+Added Pin To Net: NetName=EN Pin=PMOD-3
+Added Net: Name=EN
+Added Pin To Net: NetName=FB2 Pin=COMP-7
+Added Pin To Net: NetName=FB2 Pin=R_hist3-2
+Added Pin To Net: NetName=FB2 Pin=R_hist4-1
+Added Net: Name=FB2
+Added Pin To Net: NetName=FB Pin=COMP-1
+Added Pin To Net: NetName=FB Pin=PMOD-4
+Added Pin To Net: NetName=FB Pin=R_hist1-1
+Added Pin To Net: NetName=FB Pin=R_hist2-2
+Added Net: Name=FB
+Added Pin To Net: NetName=GND Pin=C1-1
+Added Pin To Net: NetName=GND Pin=C3-2
+Added Pin To Net: NetName=GND Pin=COMP-4
+Added Pin To Net: NetName=GND Pin=DAC-10
+Added Pin To Net: NetName=GND Pin=DRV-6
+Added Pin To Net: NetName=GND Pin=DualNMos-4
+Added Pin To Net: NetName=GND Pin=OUT-2
+Added Pin To Net: NetName=GND Pin=P_GND-1
+Added Pin To Net: NetName=GND Pin=P_GND-2
+Added Pin To Net: NetName=GND Pin=P_GND-3
+Added Pin To Net: NetName=GND Pin=P_GND-4
+Added Pin To Net: NetName=GND Pin=PMOD-2
+Added Pin To Net: NetName=GND Pin=PMOD-8
+Added Pin To Net: NetName=GND Pin=Vcc2-1
+Added Pin To Net: NetName=GND Pin=Vin-1
+Added Net: Name=GND
+Added Pin To Net: NetName=LDAC Pin=DAC-4
+Added Net: Name=LDAC
+Added Pin To Net: NetName=NetC2_1 Pin=C2-1
+Added Pin To Net: NetName=NetC2_1 Pin=DRV-7
+Added Pin To Net: NetName=NetC2_1 Pin=DualNMos-1
+Added Pin To Net: NetName=NetC2_1 Pin=DualNMos-3
+Added Pin To Net: NetName=NetC2_1 Pin=L1-1
+Added Net: Name=NetC2_1
+Added Pin To Net: NetName=NetC2_2 Pin=C2-2
+Added Pin To Net: NetName=NetC2_2 Pin=DRV-1
+Added Net: Name=NetC2_2
+Added Pin To Net: NetName=NetCOMP_3 Pin=COMP-3
+Added Pin To Net: NetName=NetCOMP_3 Pin=R_hist2-1
+Added Net: Name=NetCOMP_3
+Added Pin To Net: NetName=NetCOMP_5 Pin=COMP-5
+Added Pin To Net: NetName=NetCOMP_5 Pin=R_hist4-2
+Added Net: Name=NetCOMP_5
+Added Pin To Net: NetName=NetDAC_8 Pin=DAC-8
+Added Pin To Net: NetName=NetDAC_8 Pin=P_DAC-2
+Added Net: Name=NetDAC_8
+Added Pin To Net: NetName=NetDAC_9 Pin=DAC-9
+Added Pin To Net: NetName=NetDAC_9 Pin=P_DAC-1
+Added Net: Name=NetDAC_9
+Added Pin To Net: NetName=PWM Pin=DRV-2
+Added Net: Name=PWM
+Added Pin To Net: NetName=RDY Pin=DAC-5
+Added Pin To Net: NetName=RDY Pin=PMOD-6
+Added Pin To Net: NetName=RDY Pin=R3-1
+Added Net: Name=RDY
+Added Pin To Net: NetName=SCL Pin=DAC-2
+Added Pin To Net: NetName=SCL Pin=R1-1
+Added Net: Name=SCL
+Added Pin To Net: NetName=SDA Pin=DAC-3
+Added Pin To Net: NetName=SDA Pin=PMOD-5
+Added Pin To Net: NetName=SDA Pin=R2-1
+Added Net: Name=SDA
+Added Pin To Net: NetName=VCC2 Pin=COMP-8
+Added Pin To Net: NetName=VCC2 Pin=DAC-1
+Added Pin To Net: NetName=VCC2 Pin=Vcc2-2
+Added Net: Name=VCC2
+Added Pin To Net: NetName=VCC Pin=C3-1
+Added Pin To Net: NetName=VCC Pin=DRV-4
+Added Pin To Net: NetName=VCC Pin=DualNMos-6
+Added Pin To Net: NetName=VCC Pin=R1-2
+Added Pin To Net: NetName=VCC Pin=R2-2
+Added Pin To Net: NetName=VCC Pin=R3-2
+Added Pin To Net: NetName=VCC Pin=Vin-2
+Added Net: Name=VCC
+Added Pin To Net: NetName=VOUT Pin=C1-2
+Added Pin To Net: NetName=VOUT Pin=L1-2
+Added Pin To Net: NetName=VOUT Pin=OUT-1
+Added Pin To Net: NetName=VOUT Pin=R_hist1-2
+Added Net: Name=VOUT
+Added Pin To Net: NetName=VREF2 Pin=COMP-6
+Added Pin To Net: NetName=VREF2 Pin=DAC-7
+Added Net: Name=VREF2
+Added Pin To Net: NetName=VREF Pin=COMP-2
+Added Pin To Net: NetName=VREF Pin=DAC-6
+Added Net: Name=VREF
+Added Class: Name=Sheet1
+Added Room: Name=Sheet1

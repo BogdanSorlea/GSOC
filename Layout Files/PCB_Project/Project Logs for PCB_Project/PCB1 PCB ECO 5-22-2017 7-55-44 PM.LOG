@@ -1,0 +1,9 @@
+Removed Pin From Net: NetName=VIN Pin=Q1-1
+Removed Pin From Net: NetName=NetDRV2_5 Pin=Q1-2
+Removed Pin From Net: NetName=NetL1_1 Pin=Q2-1
+Removed Pin From Net: NetName=NetDRV1_5 Pin=Q2-2
+Added Pin To Net: NetName=NetDRV2_5 Pin=Q1-1
+Added Pin To Net: NetName=VIN Pin=Q1-2
+Added Pin To Net: NetName=NetDRV1_5 Pin=Q2-1
+Added Pin To Net: NetName=NetL1_1 Pin=Q2-2
+Added Member To Class: ClassName=Sheet1 Member=Component P Header 2

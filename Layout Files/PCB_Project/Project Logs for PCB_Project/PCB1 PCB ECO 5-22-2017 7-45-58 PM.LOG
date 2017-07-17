@@ -1,0 +1,7 @@
+Added Component: Designator=P_GND(HDR1X4)
+Added Pin To Net: NetName=GND Pin=P_GND-1
+Added Pin To Net: NetName=GND Pin=P_GND-2
+Added Pin To Net: NetName=GND Pin=P_GND-3
+Added Pin To Net: NetName=GND Pin=P_GND-4
+Added Member To Class: ClassName=Sheet1 Member=Component P_GND Header 4
+Added Member To Class: ClassName=Sheet1 Member=Component P Header 2

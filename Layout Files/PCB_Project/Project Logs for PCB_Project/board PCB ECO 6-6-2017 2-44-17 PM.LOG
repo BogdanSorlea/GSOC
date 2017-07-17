@@ -1,0 +1,4 @@
+Removed Pin From Net: NetName=GND Pin=DRV-9
+Removed Pin From Net: NetName=VCC Pin=DualNMos-7
+Removed Pin From Net: NetName=JONC Pin=DualNMos-8
+Added Member To Class: ClassName=Sheet1 Member=Component R3 Res1
