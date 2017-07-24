@@ -1,4 +1,8 @@
 `timescale 1ns / 1ps
+//Author: Niculescu Vlad
+//Copyright (C)2017
+//Licensed under CERN OHL v1.2
+
 
 module UARTtoI2C(
     input clock,

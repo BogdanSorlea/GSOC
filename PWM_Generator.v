@@ -10,8 +10,8 @@ module PWM_Generator(
     output reg pwm,
     output reg en
     );
-reg [8:0] duty = 256; 
-reg [8:0] ramp = 0;
+reg [10:0] duty = 0; 
+reg [10:0] ramp = 0;
 reg [29:0] cnt = 0;
 wire clock_200;
 
@@ -30,7 +30,7 @@ always @(posedge clock200) begin
 end
     
 always @(posedge clock200) begin
-    if(cnt == 10000) begin
+    if(cnt == 10000) begin //10000
         cnt <=0;
         if(fb) 
             duty <= duty - 1;
