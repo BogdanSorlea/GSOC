@@ -4,7 +4,6 @@
 //Copyright (C)2017
 //Licensed under CERN OHL v1.2
 
-
 module triBuf(
     input in,
     input tristate,

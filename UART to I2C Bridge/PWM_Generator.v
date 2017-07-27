@@ -1,4 +1,5 @@
 `timescale 1ns / 1ps
+
 //Author: Niculescu Vlad
 //Copyright (C)2017
 //Licensed under CERN OHL v1.2
@@ -30,7 +31,7 @@ always @(posedge clock200) begin
 end
     
 always @(posedge clock200) begin
-    if(cnt == 10000) begin //10000
+    if(cnt == 10000) begin 
         cnt <=0;
         if(fb) 
             duty <= duty - 1;

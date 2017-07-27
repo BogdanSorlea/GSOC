@@ -1,23 +1,22 @@
 `timescale 1ns / 1ps
+
 //Author: Niculescu Vlad
 //Copyright (C)2017
 //Licensed under CERN OHL v1.2
 
-
 module UARTtoI2C(
     input clock,
     output reg [2:0] state = 0,
-    output [2:0] state_i2c,
-    
-    inout SDA,
-    inout SCL,
-    
+    output [2:0] state_i2c,    
     output TX,
     input RX,
-    output test,
+    output DAC_update,
     output pwm,
     input fb,
-    output en            
+    output en,
+    
+    inout SDA,
+    inout SCL           
     );
 
 wire [7:0] data_rx;
@@ -35,7 +34,7 @@ wire busy;
 wire TXbusy;
 wire SDA_i;
 wire SCL_i; 
-reg [7:0] command[0:31];
+reg [7:0] command [0:31];
 reg [4:0] memCnt = 0;
 reg [1:0] byteCnt = 0;
 reg [7:0] LSB;
@@ -95,7 +94,7 @@ I2C_M(
     .SCL_o(SCL_o),
     .SCL_i(SCL),
     .SDA_i(SDA),
-    .test(test)
+    .DAC_update(DAC_update)
 );               
             
 triBuf TSDA(
@@ -115,7 +114,7 @@ always @(posedge clock) begin
     if (goTX == 1) 
         goTX <= 0;  
         
-    if(go == 1)    
+    if (go == 1)    
         go <= 0;
                                                                 
     case(state)
@@ -137,7 +136,7 @@ always @(posedge clock) begin
                 end
                 else begin
                     if (byteCnt == 0) begin
-                        if(data_rx < 58)
+                        if (data_rx < 58)
                             LSB <= data_rx - 48;
                         else
                             LSB <= data_rx - 55;
@@ -145,7 +144,7 @@ always @(posedge clock) begin
                         byteCnt <= 1;
                     end
                     else if (byteCnt == 1) begin
-                        if(data_rx < 58)
+                        if (data_rx < 58)
                             command[memCnt] <= LSB * 16 + data_rx - 48;
                         else
                             command[memCnt] <= LSB * 16 + data_rx - 55;

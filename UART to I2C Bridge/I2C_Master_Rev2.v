@@ -4,20 +4,19 @@
 //Copyright (C)2017
 //Licensed under CERN OHL v1.2
 
-
 module I2C_M (
-    input clock,
+    input clock,            //system clock
     input [7:0] data_w,		//data to write to slave
-    input start,
-    input stop,
-    input rw,
-    input go,
-    output reg [7:0] data_r,	//data to read from slave
-    output reg ack,
-    output reg ack_r,
-    output reg nack,
-    output reg timeout,
-    output reg busy,
+    input start,            //start the communication
+    input stop,             //stop the communication
+    input rw,               //read from slave/ write to slave
+    input go,               //start current operation
+    output reg [7:0] data_r,//data to read from slave
+    output reg ack,         //write ack flag
+    output reg ack_r,       //read ack flag
+    output reg nack,        //not acknowledge - abort
+    output reg timeout,     //communication timed out - abort
+    output reg busy,        //cummunication in progress
 
     input SDA_i,
     input SCL_i,
@@ -27,7 +26,7 @@ module I2C_M (
     output reg SCL_o,
 
     output reg [2:0] state = 0,
-    output reg test = 0
+    output reg DAC_update = 0
 );
 
  
@@ -127,7 +126,7 @@ always @(posedge clock) begin
                 if (SCL_prev == 1 && SCL_i == 0) begin
                     SCL_up <= 1;
                 end   
-                if(SCL_up == 1) begin
+                if (SCL_up == 1) begin
                     if (stop_cnt_v == 500) begin
                         SCL_en <= 0;
                         SDA_t <= 0;
