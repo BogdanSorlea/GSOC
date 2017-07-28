@@ -18,12 +18,11 @@ module I2C_Slave(
 parameter I2C_ADR = 7'h30;
 parameter
     WAIT_S = 0,
-    START_S = 1,
-    READ_DEV_S = 2,
-    READ_REG_S = 3,
-    READ_DATA_S = 4,
-    WRITE_DATA_S = 5,
-    STOP_S = 6;     
+    READ_DEV_S = 1,
+    READ_REG_S = 2,
+    READ_DATA_S = 3,
+    WRITE_DATA_S = 4,
+    STOP_S = 5;     
 
 reg [7:0] I2C_registers [0:255]; 
 reg SCL_prev;
@@ -39,13 +38,13 @@ always @(posedge clock) begin
     SCL_prev <= SCL_i;
     if (stop)
         state <= WAIT_S;
-    else
+    else begin
         case(state)
             WAIT_S : begin
                 SDA_t <= 1;
                 SCL_t <= 1;
                 if (SDA_i == 0 && SCL_i == 1)
-                    state <= START_S;
+                    state <= READ_DEV_S;
             end
             
             READ_DEV_S : begin
@@ -154,6 +153,7 @@ always @(posedge clock) begin
                 end
             end                
         endcase
+    end
 end  
 
 always @(posedge clock) begin
@@ -170,6 +170,5 @@ always @(posedge clock) begin
             end
         end
     endcase
-end
-    
+end 
 endmodule
