@@ -31,7 +31,7 @@ always @(posedge clock200) begin
 end
     
 always @(posedge clock200) begin
-    if(cnt == 10000) begin 
+    if(cnt == 15000) begin 
         cnt <=0;
         if(fb) 
             duty <= duty - 1;
