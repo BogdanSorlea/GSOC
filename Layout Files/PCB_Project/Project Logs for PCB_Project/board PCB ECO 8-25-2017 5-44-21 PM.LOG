@@ -1,0 +1,13 @@
+Removed Pin From Net: NetName=FB Pin=R_hist1-1
+Removed Pin From Net: NetName=NetCOMP_3 Pin=R_hist2-1
+Removed Pin From Net: NetName=FB Pin=R_hist2-2
+Removed Pin From Net: NetName=FB2 Pin=R_hist3-2
+Removed Pin From Net: NetName=FB2 Pin=R_hist4-1
+Removed Pin From Net: NetName=NetCOMP_5 Pin=R_hist4-2
+Added Pin To Net: NetName=NetCOMP_3 Pin=R_hist1-1
+Added Pin To Net: NetName=FB Pin=R_hist2-1
+Added Pin To Net: NetName=NetCOMP_3 Pin=R_hist2-2
+Added Pin To Net: NetName=NetCOMP_5 Pin=R_hist3-2
+Added Pin To Net: NetName=NetCOMP_5 Pin=R_hist4-1
+Added Pin To Net: NetName=FB2 Pin=R_hist4-2
+Added Room: Name=Sheet1

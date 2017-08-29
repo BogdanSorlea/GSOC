@@ -1,24 +1,8 @@
 `timescale 1ns / 1ps
-//////////////////////////////////////////////////////////////////////////////////
-// Company: 
-// Engineer: 
-// 
-// Create Date: 07/15/2017 07:33:06 PM
-// Design Name: 
-// Module Name: PLL
-// Project Name: 
-// Target Devices: 
-// Tool Versions: 
-// Description: 
-// 
-// Dependencies: 
-// 
-// Revision:
-// Revision 0.01 - File Created
-// Additional Comments:
-// 
-//////////////////////////////////////////////////////////////////////////////////
 
+//Author: Niculescu Vlad
+//Copyright (C)2017
+//Licensed under CERN OHL v1.2
 
 module PLL(
     input         in,

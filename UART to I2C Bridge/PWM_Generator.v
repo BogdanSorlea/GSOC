@@ -4,42 +4,76 @@
 //Copyright (C)2017
 //Licensed under CERN OHL v1.2
 
-
 module PWM_Generator(
     input clock,
     input fb,
     output reg pwm,
-    output reg en
+    output reg en,
+    input [15:0] clock_step,
+    input [15:0] fb_interval,
+    output fb_out,
+    output reg fb_out_unaveraged,
+    output reg test = 0
     );
-reg [10:0] duty = 0; 
-reg [10:0] ramp = 0;
-reg [29:0] cnt = 0;
-wire clock_200;
+    
+reg [5:0] duty = 30; 
+reg [5:0] ramp = 0;
+reg [5:0] ramp_prev;
+reg [16:0] clock_cnt = 0;
+wire clock2;
+reg clock_fr;
+reg [16:0] decimal = 65000;
 
 PLL pll(
     .in(clock),
-    .out(clock200));
+    .out(clock2));
+
+Filter f(
+    .clock(clock),
+    .comp_out(fb),
+    .comp_out_f(fb_out));
+    
+always @(posedge clock) begin
+    fb_out_unaveraged <= fb;
+end
+always @(posedge clock) begin
+    clock_fr <= clock_cnt[16];
+    clock_cnt <= clock_cnt + clock_step;
+end
           
-always @(posedge clock200) begin
+always @(posedge clock_fr) begin
     en <= 1;
     ramp <= ramp + 1;
     
-    if (ramp < duty) 
+    if (ramp <= duty) 
         pwm <= 1;
     else 
-        pwm <= 0;      
+        pwm <= 0;       
 end
     
-always @(posedge clock200) begin
-    if(cnt == 15000) begin 
-        cnt <=0;
-        if(fb) 
-            duty <= duty - 1;
-        else 
-            duty <= duty + 1;
+always @(posedge clock) begin 
+    ramp_prev <= ramp;
+            
+    if (ramp == 0 && ramp_prev == 63) begin 
+        test <= !test;
+        if (fb) begin
+            if (decimal == 65000 - fb_interval) begin
+                decimal <= 65000;
+                if (duty > 0)
+                    duty <= duty - 1;
+            end
+            else 
+                decimal <= decimal - 1;
+        end
+        else begin
+            if (decimal == 65000 + fb_interval) begin
+                decimal <= 65000;
+                if (duty < 63) 
+                    duty <= duty + 1;
+            end
+            else 
+                decimal <= decimal + 1;  
+        end 
     end
-    else
-        cnt <= cnt + 1;    
-    end
-       
+end
 endmodule

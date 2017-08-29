@@ -14,6 +14,9 @@ module UARTtoI2C(
     output pwm,
     input fb,
     output en,
+    output fb_out,
+    output fb_out_unaveraged,
+    output test,
     
     inout SDA,
     inout SCL           
@@ -37,7 +40,7 @@ wire SCL_i;
 reg [7:0] command [0:31];
 reg [4:0] memCnt = 0;
 reg [1:0] byteCnt = 0;
-reg [7:0] LSB;
+reg [7:0] MSB;
 reg start = 0;
 reg stop = 0;
 reg [7:0] data_w;       
@@ -46,18 +49,31 @@ reg [7:0] data_tx;
 reg go = 0;
 reg goTX = 0;
 reg [23:0] buffer_tx;
+reg [15:0] div_value;
+reg [15:0] interval_value;
+reg [1:0] adj_cnt = 0;
+reg [15:0] update_interval = 150;
+reg [15:0] update_div = 65535;
+
 
 parameter 
     START_S = 0,
     FILLBUF_S = 1,
     SEND_S = 2,
-    WAIT_S = 3;
+    WAIT_S = 3,
+    UPDATE_DIV_S = 4,
+    UPDATE_INTERVAL_S = 5;
 
 PWM_Generator gen(
     .clock(clock),
     .fb(fb),
     .pwm(pwm),
-    .en(en));
+    .en(en),
+    .clock_step(update_div),
+    .fb_interval(update_interval),
+    .fb_out(fb_out),
+    .fb_out_unaveraged(fb_out_unaveraged),
+    .test(test));
              
 RX Receiver(
     .clock(clock),
@@ -122,9 +138,14 @@ always @(posedge clock) begin
             goTX <= 0;
             memCnt <= 0;
             byteCnt <= 0;
-            if (d_avail)
-                if (data_rx == 83) 
+            if (d_avail) begin
+                if (data_rx == 83)      //S
                     state <= FILLBUF_S;
+                else if (data_rx == 88) //X
+                    state <= UPDATE_DIV_S;
+                else if (data_rx == 84) //T
+                    state <= UPDATE_INTERVAL_S;
+            end
         end
         
         FILLBUF_S : 
@@ -137,17 +158,17 @@ always @(posedge clock) begin
                 else begin
                     if (byteCnt == 0) begin
                         if (data_rx < 58)
-                            LSB <= data_rx - 48;
+                            MSB <= data_rx - 48;
                         else
-                            LSB <= data_rx - 55;
+                            MSB <= data_rx - 55;
                             
                         byteCnt <= 1;
                     end
                     else if (byteCnt == 1) begin
                         if (data_rx < 58)
-                            command[memCnt] <= LSB * 16 + data_rx - 48;
+                            command[memCnt] <= MSB * 16 + data_rx - 48;
                         else
-                            command[memCnt] <= LSB * 16 + data_rx - 55;
+                            command[memCnt] <= MSB * 16 + data_rx - 55;
                         memCnt <= memCnt + 1;   
                         byteCnt <= byteCnt + 1;       
                     end
@@ -221,7 +242,97 @@ always @(posedge clock) begin
                 data_tx <= data_r; //N
                 goTX <= 1;
             end                           
-        end              
+        end
+        
+        UPDATE_DIV_S : 
+            if (d_avail) begin
+                if (data_rx == 115) begin //s
+                    state <= START_S;
+                    adj_cnt <= 0;
+                    update_div <= div_value;     
+                    data_tx <= 68; //D
+                    goTX <= 1;
+                end
+                else begin
+                    if (adj_cnt == 0) begin
+                        if (data_rx < 58)
+                            div_value <= data_rx - 48;
+                        else
+                            div_value <= data_rx - 55;
+                            
+                        adj_cnt <= 1;
+                    end
+                    else if (adj_cnt == 1) begin
+                        if (data_rx < 58)
+                            div_value <= div_value * 16 + data_rx - 48;
+                        else
+                            div_value <= div_value * 16 + data_rx - 55;
+                            
+                        adj_cnt <= 2;       
+                    end
+                    else if (adj_cnt == 2) begin
+                        if (data_rx < 58)
+                            div_value <= div_value * 16 + data_rx - 48;
+                        else
+                            div_value <= div_value * 16 + data_rx - 55;
+                            
+                        adj_cnt <= 3;       
+                    end
+                    else if (adj_cnt == 3) begin
+                        if (data_rx < 58)
+                            div_value <= div_value * 16 + data_rx - 48;
+                        else
+                            div_value <= div_value * 16 + data_rx - 55;
+                            
+                        adj_cnt <= 0;
+                    end
+                end
+            end
+            
+        UPDATE_INTERVAL_S : 
+                if (d_avail) begin
+                    if (data_rx == 115) begin //s
+                        state <= START_S;
+                        adj_cnt <= 0;
+                        update_interval <= interval_value; 
+                        data_tx <= 68; //D
+                        goTX <= 1;   
+                    end
+                    else begin
+                        if (adj_cnt == 0) begin
+                            if (data_rx < 58)
+                                interval_value <= data_rx - 48;
+                            else
+                                interval_value <= data_rx - 55;
+                                
+                            adj_cnt <= 1;
+                        end
+                        else if (adj_cnt == 1) begin
+                            if (data_rx < 58)
+                                interval_value <= interval_value * 16 + data_rx - 48;
+                            else
+                                interval_value <= interval_value * 16 + data_rx - 55;
+                                
+                            adj_cnt <= 2;       
+                        end
+                        else if (adj_cnt == 2) begin
+                            if (data_rx < 58)
+                                interval_value <= interval_value * 16 + data_rx - 48;
+                            else
+                                interval_value <= interval_value * 16 + data_rx - 55;
+                                
+                            adj_cnt <= 3;       
+                        end
+                        else if (adj_cnt == 3) begin
+                            if (data_rx < 58)
+                                interval_value <= interval_value * 16 + data_rx - 48;
+                            else
+                                interval_value <= interval_value * 16 + data_rx - 55;
+                                
+                            adj_cnt <= 0;  
+                        end
+                    end
+                end                 
     endcase  
 end        
 endmodule

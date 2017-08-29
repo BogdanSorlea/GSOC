@@ -1,0 +1,8 @@
+Change Component Designator: OldDesignator=C1 NewDesignator=C2
+Change Component Designator: OldDesignator=L1 NewDesignator=Ferrite
+Added Pin To Net: NetName=NetC1_2 Pin=C1-2
+Added Pin To Net: NetName=NetC1_2 Pin=Ferrite-1
+Added Pin To Net: NetName=NetC1_2 Pin=L1-2
+Change Net Name : Old Net Name=NetC1_2 New Net Name=VOUTBUCK
+Added Member To Class: ClassName=Sheet1 Member=Component C2 Cap
+Added Member To Class: ClassName=Sheet1 Member=Component Ferrite 74438336022
