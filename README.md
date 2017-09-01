@@ -12,4 +12,4 @@ The goals are:
 * obtaining an accuracy below 100mV
 * obtaining a ripple voltage below 50mV
 
-For building instructions, read "Documentnation.pdf".
+For building instructions, read "Documentation.pdf".
