@@ -10,10 +10,7 @@ module PWM_Generator(
     output reg pwm,
     output reg en,
     input [15:0] clock_step,
-    input [15:0] fb_interval,
-    output fb_out,
-    output reg fb_out_unaveraged,
-    output reg test = 0
+    input [15:0] fb_interval
     );
     
 reg [5:0] duty = 30; 
@@ -23,15 +20,13 @@ reg [16:0] clock_cnt = 0;
 wire clock2;
 reg clock_fr;
 reg [16:0] decimal = 65000;
+wire fb_out;
 
 Filter f(
     .clock(clock),
     .comp_out(fb),
     .comp_out_f(fb_out));
     
-always @(posedge clock) begin
-    fb_out_unaveraged <= fb;
-end
 always @(posedge clock) begin
     clock_fr <= clock_cnt[16];
     clock_cnt <= clock_cnt + clock_step;
@@ -51,7 +46,6 @@ always @(posedge clock) begin
     ramp_prev <= ramp;
             
     if (ramp == 0 && ramp_prev == 63) begin 
-        test <= !test;
         if (fb) begin
             if (decimal == 65000 - fb_interval) begin
                 decimal <= 65000;

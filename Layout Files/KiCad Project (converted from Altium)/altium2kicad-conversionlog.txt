@@ -1,0 +1,12 @@
+Archive:  db/589.zip
+  inflating: db/589/Sheet1.SchDoc    
+  inflating: db/589/PCB_Project.PrjPcb  
+Loading Sheet1.SchDoc
+
+Done.
+Handling Sheet1-SchDoc/Root Entry/FileHeader.dat
+No unpacked .PcbDoc documents found. Trying to unpack it:
+Loading Sheet1.SchDoc
+
+Done.
+There were no unpacked PcbDoc files found.
